@@ -59,31 +59,15 @@ namespace EvectCorp.Models
 
         private ReplyKeyboardMarkup GetKeyboard(List<List<KeyboardButton>> buttons, bool isOneTime)
         {
+            if (buttons.Count == 0)
+                throw new ArgumentException("You haven't added any row");
+            
+            if (buttons.Any(b => b.Count == 0))
+                throw new ArgumentException("One of rows doesnt have buttons ");
+            
             var keyboard = new ReplyKeyboardMarkup
             {
                 Keyboard = buttons,
-                ResizeKeyboard = true,
-                OneTimeKeyboard = isOneTime
-            };
-
-            return keyboard;
-        }
-        
-        
-        private ReplyKeyboardMarkup GetKeyboard(IEnumerable<IEnumerable<string>> buttons, bool isOneTime = false)
-        {
-            
-            List<List<KeyboardButton>> keyboardButtons = new List<List<KeyboardButton>>();
-            
-            foreach (var enumerable in buttons)
-            {
-                List<KeyboardButton> buts = enumerable.Select(u => new KeyboardButton(u)).ToList();
-                keyboardButtons.Add(buts);
-            }
-
-            var keyboard = new ReplyKeyboardMarkup
-            {
-                Keyboard = keyboardButtons,
                 ResizeKeyboard = true,
                 OneTimeKeyboard = isOneTime
             };
