@@ -17,7 +17,7 @@ namespace EvectCorp.Models.Commands
     public class ActionHandler
     {
         [UserAction(Actions.WaitingForPassword)]
-        public async Task OnWaitingPassword(ApplicationContext context, Message message,
+        public async Task OnWaitingForPassword(ApplicationContext context, Message message,
             TelegramBotClient client)
         {
             var text = message.Text;
@@ -29,14 +29,7 @@ namespace EvectCorp.Models.Commands
                 builder.AppendLine("Пароль **правильный**");
                 builder.AppendLine();
                 builder.AppendLine("Вам доступен мой функционал");
-
-                string[][] actions = new[] {new[] {"1", "1", "1", "1", "1", "1", "1", "1", "1", "1"}};
                 
-                await client.SendTextMessageAsync(
-                    chatId, 
-                    builder.ToString(),
-                    ParseMode.Markdown,
-                    replyMarkup: TelegramKeyboard.GetKeyboard(actions, true));
                 await DatabaseUtils.SetUserAdmin(context, chatId);
                 await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForAction);
             }
@@ -47,6 +40,26 @@ namespace EvectCorp.Models.Commands
                     "Пароль неправильный",
                     ParseMode.Markdown);
             }
+        }
+
+        [UserAction(Actions.WaitingForAction)]
+        public async Task OnWaitingForAction(ApplicationContext context, Message message,
+            TelegramBotClient client)
+        {
+            var text = message.Text;
+            var chatId = message.Chat.Id;
+                
+            
+            
+            TelegramKeyboard keyboard = new TelegramKeyboard(true);
+            keyboard.AddRow("1", "1", "2");    
+            
+            
+            await client.SendTextMessageAsync(
+                chatId, 
+                "test",
+                ParseMode.Markdown,
+                replyMarkup: keyboard.Markup);
         }
     }
 }

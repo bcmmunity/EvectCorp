@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Evect.Models;
-using Evect.Models.Commands;
 using Evect.Models.DB;
 using EvectCorp.Models;
 using EvectCorp.Models.Commands;
@@ -10,22 +9,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using User = Telegram.Bot.Types.User;
+using Telegram.Bot.Types.Enums;
 
 namespace EvectCorp.Controllers
 {
     public class HomeController : Controller
     {
-
         private CommandHandler _commandHandler;
         private ActionHandler _actionHandler;
-        private Dictionary<Action<ApplicationContext, Message, TelegramBotClient>, string> _commands;
-        private Dictionary<Action<ApplicationContext, Message, TelegramBotClient>, Actions> _actions;
+        private Dictionary<Func<ApplicationContext, Message, TelegramBotClient, Task>, string> _commands;
+        private Dictionary<Func<ApplicationContext, Message, TelegramBotClient, Task>, Actions> _actions;
 
         public HomeController(ApplicationContext db)
         {
-            
-
             _commandHandler = new CommandHandler();
             _actionHandler = new ActionHandler();
 
@@ -42,55 +38,59 @@ namespace EvectCorp.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Update update)
         {
-
             if (update == null)
                 return Ok();
 
+            
             using (ApplicationContext db = new ApplicationContext(new DbContextOptions<ApplicationContext>()))
             {
                 var message = update.Message;
                 var client = new TelegramBotClient(AppSettings.Key);
                 var chatId = message.Chat.Id;
+                var text = message.Text;
 
-                User user = await UserDB.GetUserByChatId(db, chatId);
+                AdminUser user = await DatabaseUtils.GetUserByChatId(db, chatId);
 
                 if (user == null)
                 {
-                    foreach (var pair in _commands)
-                    {
-                        if (pair.Value == "/start")
-                        {
-                            pair.Key(db, message, client);
-                        }
-                    }
-
-                    return Ok();
+                    await DatabaseUtils.AddUser(db, chatId);
                 }
-
-                if (!user.IsAuthed)
+                else
                 {
-                    foreach (var pair in _commands)
+                    if (user.IsAdmin)
                     {
-                        if (pair.Value == "/start" || pair.Value == "Личный кабинет")
+                        foreach (var pair in _actions)
                         {
-                            pair.Key(db, message, client);
-                        }
+                            if (pair.Value == user.CurrentAction)
+                            {
+                                await pair.Key(db, message, client);
+                            }
+                        }   
                     }
-
-                    return Ok();
-                }
-
-                foreach (var pair in _actions)
-                {
-                    if (pair.Value == user.CurrentAction)
+                    else
                     {
-                        pair.Key(db, message, client);
+                        await _actions
+                            .Where(u => u.Value == Actions.WaitingForPassword)
+                            .Select(u => u.Key)
+                            .First()(db, message, client);
                     }
                 }
+                
+                if (text == "/start")
+                {
+                    await client.SendTextMessageAsync(
+                        chatId, 
+                        "Добро пожаловать, введите администраторский пароль",
+                        ParseMode.Markdown);
+                    await DatabaseUtils.ChangeUserAction(db, chatId, Actions.WaitingForPassword);
+                }
+
+                
+
+                return Ok();
             }
 
 
-            return Ok();
         }
     }
 }
