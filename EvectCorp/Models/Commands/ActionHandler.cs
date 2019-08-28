@@ -51,8 +51,10 @@ namespace EvectCorp.Models.Commands
                 
             
             
-            TelegramKeyboard keyboard = new TelegramKeyboard(true);
-            keyboard.AddRow("1", "1", "2");    
+            TelegramInlineKeyboard keyboard = new TelegramInlineKeyboard();
+            keyboard
+                .AddTextRow("123", "123")
+                .AddCallbackRow("123", "123");
             
             
             await client.SendTextMessageAsync(

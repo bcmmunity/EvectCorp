@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DEBUG
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,11 +42,11 @@ namespace EvectCorp.Controllers
             if (update == null)
                 return Ok();
 
-            
+
             using (ApplicationContext db = new ApplicationContext(new DbContextOptions<ApplicationContext>()))
             {
-                var message = update.Message;
                 var client = new TelegramBotClient(AppSettings.Key);
+                var message = update.Message;
                 var chatId = message.Chat.Id;
                 var text = message.Text;
 
@@ -65,7 +66,7 @@ namespace EvectCorp.Controllers
                             {
                                 await pair.Key(db, message, client);
                             }
-                        }   
+                        }
                     }
                     else
                     {
@@ -75,22 +76,19 @@ namespace EvectCorp.Controllers
                             .First()(db, message, client);
                     }
                 }
-                
+
                 if (text == "/start")
                 {
                     await client.SendTextMessageAsync(
-                        chatId, 
+                        chatId,
                         "Добро пожаловать, введите администраторский пароль",
                         ParseMode.Markdown);
                     await DatabaseUtils.ChangeUserAction(db, chatId, Actions.WaitingForPassword);
                 }
 
-                
 
                 return Ok();
             }
-
-
         }
     }
 }
