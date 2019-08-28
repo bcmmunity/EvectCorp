@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Evect.Models.DB;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -9,7 +10,7 @@ namespace EvectCorp.Models.Commands
     {
 
         [TelegramCommand("/start")]
-        public async void OnStart(ApplicationContext context, Message message, TelegramBotClient client)
+        public async Task OnStart(ApplicationContext context, Message message, TelegramBotClient client)
         {
             }
 

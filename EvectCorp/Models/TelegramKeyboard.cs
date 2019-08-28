@@ -1,17 +1,20 @@
+using System.Collections.Generic;
+using Telegram.Bot.Types.ReplyMarkups;
+
 namespace EvectCorp.Models
 {
-    public static class TelegramKeyboard
+    public  class TelegramKeyboard
     {
-        public static Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup GetKeyboard(string[][] buttons, bool isOneTime = false)
+        public  ReplyKeyboardMarkup GetKeyboard(string[][] buttons, bool isOneTime = false)
         {
             int rows = buttons.Length;
 
-            Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][] keyboardButtons =
-                new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[rows][];
+            KeyboardButton[][] keyboardButtons =
+                new KeyboardButton[rows][];
 
             for (int row = 0; row < rows; row++)
             {
-                keyboardButtons[row] = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[buttons[row].Length];
+                keyboardButtons[row] = new KeyboardButton[buttons[row].Length];
 
                 for (int column = 0; column < buttons[row].Length; column++)
                 {
@@ -20,7 +23,7 @@ namespace EvectCorp.Models
             }
 
             
-            var keyboard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup
+            var keyboard = new ReplyKeyboardMarkup
             {
                 Keyboard = keyboardButtons,
                 ResizeKeyboard = true,
@@ -29,27 +32,30 @@ namespace EvectCorp.Models
 
             return keyboard;
         }
+        
+        
+        
 
-        public static Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup GetInlineKeyboard(string[][] buttons,
+        public static InlineKeyboardMarkup GetInlineKeyboard(string[][] buttons,
             string[][] callback_data)
         {
             int rows = buttons.Length;
-            Telegram.Bot.Types.ReplyMarkups.InlineKeyboardButton[][] keyboardButtons =
-                new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardButton[rows][];
+            InlineKeyboardButton[][] keyboardButtons =
+                new InlineKeyboardButton[rows][];
 
             for (int row = 0; row < rows; row++)
             {
-                keyboardButtons[row] = new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardButton[buttons[row].Length];
+                keyboardButtons[row] = new InlineKeyboardButton[buttons[row].Length];
 
                 for (int column = 0; column < buttons[row].Length; column++)
                 {
-                    keyboardButtons[row][column] = new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardButton
+                    keyboardButtons[row][column] = new InlineKeyboardButton
                         {Text = buttons[row][column], CallbackData = callback_data[row][column]};
                 }
             }
 
 
-            var keyboard = new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup(keyboardButtons);
+            var keyboard = new InlineKeyboardMarkup(keyboardButtons);
 
             return keyboard;
         }

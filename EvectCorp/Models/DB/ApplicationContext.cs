@@ -8,6 +8,7 @@ namespace Evect.Models.DB
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -17,18 +18,9 @@ namespace Evect.Models.DB
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<AdminUser>()
                 .HasIndex(b => b.TelegramId);
             
-            modelBuilder.Entity<User>()
-                .HasData(new User
-                {
-                    UserId = 1,
-                    TelegramId = 12312312,
-                    FirstName = "artem",
-                    LastName = "kim",
-                    Email = "moranmr8@gmail.com"
-                });
             
             modelBuilder.Entity<Event>()
                 .HasData(
@@ -81,26 +73,11 @@ namespace Evect.Models.DB
                         TelegraphLink = "https://telegra.ph/Testovaya-statya-dlya-event-08-24"
                     }
                     );
-
-            modelBuilder.Entity<UserEvent>()
-                .HasKey(us => new {us.EventId, us.UserEventId});
-            
-            modelBuilder.Entity<UserEvent>()
-                .HasOne(us => us.Event)
-                .WithMany(e => e.UserEvents)
-                .HasForeignKey(k => k.EventId);
-                
-            
-            modelBuilder.Entity<UserEvent>()
-                .HasOne(us => us.User)
-                .WithMany(e => e.UserEvents)
-                .HasForeignKey(k => k.UserEventId);
-                
-
-
         }
 
+        
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<AdminUser> Admins { get; set; }
     }
 }

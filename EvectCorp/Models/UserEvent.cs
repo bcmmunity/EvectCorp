@@ -5,7 +5,7 @@ namespace EvectCorp.Models
         public int UserEventId { get; set; }
         
         public int UserId { get; set; }
-        public User User { get; set; }
+        public AdminUser AdminUser { get; set; }
         
         
         public int EventId { get; set; }
