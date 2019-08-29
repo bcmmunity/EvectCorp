@@ -25,7 +25,8 @@ namespace EvectCorp.Models.Commands
             Action = action;
         }
     }
-
+    
+    [AttributeUsage(AttributeTargets.Method)]
     public class InlineCallback : Attribute
     {
         public string[] Callbacks { get; set; }
