@@ -86,6 +86,7 @@ namespace EvectCorp.Controllers
                             if (pair.Value == user.CurrentAction)
                             {
                                 await pair.Key(db, message, client);
+                                return Ok();
                             }
                         }
                     }
@@ -106,9 +107,9 @@ namespace EvectCorp.Controllers
                         ParseMode.Markdown);
                     await DatabaseUtils.ChangeUserAction(db, chatId, Actions.WaitingForPassword);
                 }
-
-
                 return Ok();
+
+
             }
         }
     }

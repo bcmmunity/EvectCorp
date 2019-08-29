@@ -57,6 +57,22 @@ namespace Evect.Models.DB
             await context.Admins.AddAsync(user);
             await context.SaveChangesAsync();
         }
+
+        public static async Task ClearUserTempData(ApplicationContext context, long chatId)
+        {
+            AdminUser user = await GetUserByChatId(context, chatId);
+            user.TempEventName = default;
+            user.TempEventCode = default;
+
+            context.Admins.Update(user);
+            await context.SaveChangesAsync();
+
+        }
+
+        public static async Task<bool> CheckEventExists(ApplicationContext context, string code)
+        {
+            return await context.Events.FirstOrDefaultAsync(e => e.EventCode == code || e.AdminCode == code) != null;
+        }
         
 
 

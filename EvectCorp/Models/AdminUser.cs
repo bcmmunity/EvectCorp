@@ -10,6 +10,9 @@ namespace EvectCorp.Models
         public Actions CurrentAction { get; set; } = Actions.None;
         
         public bool IsAdmin { get; set; }
+        
+        public string TempEventName { get; set; }
+        public string TempEventCode { get; set; }
 
     }
 }

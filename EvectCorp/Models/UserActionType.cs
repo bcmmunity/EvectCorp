@@ -4,7 +4,11 @@ namespace EvectCorp.Models
     {
         None,
         WaitingForPassword,
-        WaitingForAction
+        WaitingForAction,
+        
+        WaitingForEventName,
+        WaitingForEventCode,
+        WaitingForEventAdminCode
 
     }
 }
