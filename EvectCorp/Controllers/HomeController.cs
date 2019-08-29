@@ -20,6 +20,7 @@ namespace EvectCorp.Controllers
         private ActionHandler _actionHandler;
         private Dictionary<Func<ApplicationContext, Message, TelegramBotClient, Task>, string> _commands;
         private Dictionary<Func<ApplicationContext, Message, TelegramBotClient, Task>, Actions> _actions;
+        private Dictionary<Func<ApplicationContext, CallbackQuery, TelegramBotClient, Task>, string[]> _callbacks;
 
         public HomeController(ApplicationContext db)
         {
@@ -28,6 +29,7 @@ namespace EvectCorp.Controllers
 
             _commands = Bot.Commands;
             _actions = Bot.ActionList;
+            _callbacks = Bot.CallbackList;
         }
 
         public IActionResult Index()
@@ -41,17 +43,36 @@ namespace EvectCorp.Controllers
         {
             if (update == null)
                 return Ok();
-
+            
+            
 
             using (ApplicationContext db = new ApplicationContext(new DbContextOptions<ApplicationContext>()))
             {
                 var client = new TelegramBotClient(AppSettings.Key);
+                
+
+                if (update.Type == UpdateType.CallbackQuery)
+                {
+                    var upd = update.CallbackQuery;
+                    foreach (var pair in _callbacks)
+                    {
+                        if (pair.Value.Contains(upd.Data))
+                        {
+                            await pair.Key(db, upd, client);
+                        }
+                    }
+
+                    return Ok();
+                }
+                
                 var message = update.Message;
                 var chatId = message.Chat.Id;
                 var text = message.Text;
-
+                
+                
                 AdminUser user = await DatabaseUtils.GetUserByChatId(db, chatId);
 
+                
                 if (user == null)
                 {
                     await DatabaseUtils.AddUser(db, chatId);

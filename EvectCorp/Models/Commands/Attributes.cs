@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace EvectCorp.Models.Commands
 {
@@ -14,7 +15,7 @@ namespace EvectCorp.Models.Commands
         }
     }
     
-    [AttributeUsage(AttributeTargets.Method)]//���� ����� �������� ������ � �������
+    [AttributeUsage(AttributeTargets.Method)]
     public class UserAction : Attribute
     {
         public Actions Action{ get; set; }
@@ -24,5 +25,18 @@ namespace EvectCorp.Models.Commands
             Action = action;
         }
     }
+
+    public class InlineCallback : Attribute
+    {
+        public string[] Callbacks { get; set; }
+
+        public InlineCallback(params string[] callbacks)
+        {
+            Callbacks = callbacks;
+        }
+        
+    }
+    
+    
     
 }
