@@ -1,6 +1,6 @@
 using System;
 
-namespace EvectCorp.Models
+namespace Evect.Models
 {
     public class ErrorViewModel
     {

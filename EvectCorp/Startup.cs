@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Evect.Models;
 using Evect.Models.DB;
 using EvectCorp.Models;
 using Microsoft.AspNetCore.Builder;

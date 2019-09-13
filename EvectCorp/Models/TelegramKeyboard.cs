@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace EvectCorp.Models
+namespace Evect.Models
 {
     public class TelegramKeyboard
     {
-
         private List<List<KeyboardButton>> _buttons;
 
         private ReplyKeyboardMarkup _markup;
@@ -17,6 +16,7 @@ namespace EvectCorp.Models
         public TelegramKeyboard()
         {
             _buttons = new List<List<KeyboardButton>>();
+            Clear();
         }
 
         public TelegramKeyboard(bool isOneTime) : this()
@@ -74,30 +74,12 @@ namespace EvectCorp.Models
 
             return keyboard;
         }
-        
 
-        public static InlineKeyboardMarkup GetInlineKeyboard(string[][] buttons,
-            string[][] callback_data)
+        public void Clear()
         {
-            int rows = buttons.Length;
-            InlineKeyboardButton[][] keyboardButtons =
-                new InlineKeyboardButton[rows][];
-
-            for (int row = 0; row < rows; row++)
-            {
-                keyboardButtons[row] = new InlineKeyboardButton[buttons[row].Length];
-
-                for (int column = 0; column < buttons[row].Length; column++)
-                {
-                    keyboardButtons[row][column] = new InlineKeyboardButton
-                        {Text = buttons[row][column], CallbackData = callback_data[row][column]};
-                }
-            }
-
-
-            var keyboard = new InlineKeyboardMarkup(keyboardButtons);
-
-            return keyboard;
+            _buttons.Clear();
         }
+        
+        
     }
 }

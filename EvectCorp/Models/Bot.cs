@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Evect.Models;
 using Evect.Models.DB;
 using EvectCorp.Models.Commands;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace EvectCorp.Models
+namespace Evect.Models
 {
     public static class Bot
     {

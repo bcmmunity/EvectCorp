@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Evect.Models;
 using Evect.Models.DB;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
@@ -39,7 +40,7 @@ namespace EvectCorp.Models.Commands
 #else
                 keyboard.AddRow("Изменение тегов");
 #endif
-                
+                keyboard.AddRow("Вывести все мероприятия");
                 
                 await DatabaseUtils.SetUserAdmin(context, chatId);
                 await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForAction);
@@ -82,6 +83,36 @@ namespace EvectCorp.Models.Commands
                     break;
                 
                 case "Изменение тегов":
+                    builder.Clear();
+
+                    builder.AppendLine("Выберите опцию");
+                    
+                    TelegramKeyboard keyboard = new TelegramKeyboard();
+                    keyboard.AddRow("Добавить родительский тег");
+                    keyboard.AddRow("Добавить дочерний тег");
+                    keyboard.AddRow("Вывести все родительские теги");
+
+                    await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForTagAction);
+                    await client.SendTextMessageAsync(chatId, builder.ToString(), ParseMode.Markdown, replyMarkup: keyboard.Markup);
+
+                    break;
+                
+                case "Вывести все мероприятия":
+                    List<Event> events = context.Events.ToList();
+                    if (events.Count > 0)
+                    {
+                        for (var i = 0; i < events.Count; i++)
+                        {
+                            builder.AppendLine($"{i+1}: {events[i].Name}");
+                        }
+                    }
+                    else
+                    {
+                        builder.AppendLine("Нету ивентов");
+                    }
+                    
+                    await client.SendTextMessageAsync(chatId, builder.ToString());
+
                     break;
                 
                 default:
@@ -117,7 +148,7 @@ namespace EvectCorp.Models.Commands
 
         }
 
-        [UserAction(Actions.WaitingForEventCode)]
+        [UserAction(Actions.WaitingForEventMemberCode)]
         public async Task OnWaitingEventCode(ApplicationContext context, Message message, 
             TelegramBotClient client)
         {
@@ -166,7 +197,7 @@ namespace EvectCorp.Models.Commands
             {
                 builder.AppendLine("Мероприятие с таким кодом _уже существует_");
                 builder.AppendLine();
-                builder.AppendLine("Введите код организтора");
+                builder.AppendLine("Введите код организатора");
                 await client.SendTextMessageAsync(chatId, builder.ToString(), ParseMode.Markdown);
             }
             else
@@ -194,12 +225,77 @@ namespace EvectCorp.Models.Commands
             
                 await client.SendTextMessageAsync(
                     chatId, 
-                    $"Мероприятие {ev.Name} успешно сохранено", 
-                    ParseMode.Default);
+                    $"Мероприятие <b>{ev.Name}</b> успешно сохранено", 
+                    ParseMode.Html);
             
                 await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForAction);
             }
 
+        }
+
+        [UserAction(Actions.WaitingForTagAction)]
+        public async Task OnWaitingForTagAction(ApplicationContext context, Message message,
+            TelegramBotClient client)
+        {            
+            var text = message.Text;
+            var chatId = message.Chat.Id;
+            StringBuilder builder = new StringBuilder();
+            switch (text)
+            {
+                case "Добавить родительский тег":
+                    await client.SendTextMessageAsync(
+                        chatId, 
+                        "Введите название нового тега", 
+                        ParseMode.Markdown);
+                    await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForParentTag);
+                    break;
+                
+                case "Добавить дочерний тег":
+                    
+                    break;
+                
+                case "Вывести все родительские теги":
+                    builder.Clear();
+                    builder.AppendLine("теги:");
+                    List<Tag> tags = context.Tags.Where(e => e.Level == 1).ToList();
+                    foreach (var tag in tags)
+                    {
+                        builder.AppendLine(tag.Name);
+                    }
+                    await client.SendTextMessageAsync(
+                        chatId, 
+                        builder.ToString(), 
+                        ParseMode.Markdown);
+                    break;
+            }
+        }
+
+        [UserAction(Actions.WaitingForParentTag)]
+        public async Task OnWaitingParenTag(ApplicationContext context, Message message,
+            TelegramBotClient client)
+        {
+            var text = message.Text;
+            var chatId = message.Chat.Id;
+            Tag tag = new Tag()
+            {
+                ParentTagID = 0,
+                Name = text,
+                Level = 1
+            };
+
+            context.Tags.Add(tag);
+            context.SaveChanges();
+            await client.SendTextMessageAsync(
+                chatId, 
+                $"Родительский тег *{tag.Name}* добавлен", 
+                ParseMode.Markdown);
+            TelegramKeyboard keyboard = new TelegramKeyboard();
+            keyboard.AddRow("Добавить родительский тег");
+            keyboard.AddRow("Добавить дочерний тег");
+            keyboard.AddRow("Вывести все родительские теги");
+
+            await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForTagAction);
+            await client.SendTextMessageAsync(chatId, "Выберите опцию", ParseMode.Markdown, replyMarkup: keyboard.Markup);
         }
 
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace EvectCorp.Models
+namespace Evect.Models
 {
     public class TelegramInlineKeyboard
     {
@@ -30,6 +30,8 @@ namespace EvectCorp.Models
             _textRows.Add(data.ToList());
             return this;
         }
+        
+
 
         public TelegramInlineKeyboard AddCallbackRow(params string[] data)
         {
@@ -53,7 +55,5 @@ namespace EvectCorp.Models
                 .ToList();
             return new InlineKeyboardMarkup(buttons);
         }
-
-
     }
 }

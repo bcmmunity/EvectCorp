@@ -1,4 +1,4 @@
-namespace EvectCorp.Models
+namespace Evect.Models
 {
     public class UserValidation
     {

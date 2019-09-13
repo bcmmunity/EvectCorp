@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Evect.Models;
 
 namespace EvectCorp.Models.Commands
 {

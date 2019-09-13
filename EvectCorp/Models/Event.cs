@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace EvectCorp.Models
+namespace Evect.Models
 {
     public class Event
     {

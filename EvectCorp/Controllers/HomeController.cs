@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Evect.Models;
 using Evect.Models.DB;
 using EvectCorp.Models;
 using EvectCorp.Models.Commands;
@@ -63,54 +64,62 @@ namespace EvectCorp.Controllers
                     }
 
                     return Ok();
-                }
+                }  
                 
-                var message = update.Message;
-                var chatId = message.Chat.Id;
-                var text = message.Text;
+                if (update.Type == UpdateType.Message)
+                {
+                    var message = update.Message;
+                    var chatId = message.Chat.Id;
+                    var text = message.Text;
                 
                 
-                AdminUser user = await DatabaseUtils.GetUserByChatId(db, chatId);
+                    AdminUser user = await DatabaseUtils.GetUserByChatId(db, chatId);
 
                 
-                if (user == null)
-                {
-                    await DatabaseUtils.AddUser(db, chatId);
-                }
-                else
-                {
-                    if (user.IsAdmin)
+                    
+                    
+                    if (user == null)
                     {
-                        foreach (var pair in _actions)
+                        if (text == "/start")
                         {
-                            if (pair.Value == user.CurrentAction)
-                            {
-                                await pair.Key(db, message, client);
-                                return Ok();
-                            }
+                            await _commands
+                                .Where(c => c.Value == text)
+                                .Select(e => e.Key)
+                                .First()(db, message, client);
+                            return Ok();
                         }
                     }
                     else
                     {
-                        await _actions
-                            .Where(u => u.Value == Actions.WaitingForPassword)
-                            .Select(u => u.Key)
-                            .First()(db, message, client);
+                        if (user.IsAdmin)
+                        {
+                            foreach (var pair in _actions)
+                            {
+                                if (pair.Value == user.CurrentAction)
+                                {
+                                    await pair.Key(db, message, client);
+                                    return Ok();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            await _actions
+                                .Where(u => u.Value == Actions.WaitingForPassword)
+                                .Select(u => u.Key)
+                                .First()(db, message, client);
+                        }
                     }
-                }
 
-                if (text == "/start")
-                {
-                    await client.SendTextMessageAsync(
-                        chatId,
-                        "Добро пожаловать, введите администраторский пароль",
-                        ParseMode.Markdown);
-                    await DatabaseUtils.ChangeUserAction(db, chatId, Actions.WaitingForPassword);
+                    
                 }
-                return Ok();
+                
+
 
 
             }
+            return Ok();
+
         }
     }
 }

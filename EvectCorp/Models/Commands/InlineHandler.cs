@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Evect.Models;
 using Evect.Models.DB;
 using Telegram.Bot;
 using Telegram.Bot.Types;

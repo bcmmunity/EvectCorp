@@ -73,6 +73,319 @@ namespace Evect.Models.DB
                         TelegraphLink = "https://telegra.ph/Testovaya-statya-dlya-event-08-24"
                     }
                     );
+            modelBuilder.Entity<Tag>().HasData(
+            new Tag
+            {
+                TagId = 1,
+                ParentTagID = 0,
+                Name = "IT",
+                Level = 1
+            },
+            new Tag
+                {
+                    TagId = 2,
+                    ParentTagID = 0,
+                    Name = "Бизнес",
+                    Level = 1
+                },
+            new Tag
+                {
+                    TagId = 3,
+                    ParentTagID = 1,
+                    Name = "Фронтэнд",
+                    Level = 2
+                },
+            new Tag
+                {
+                    TagId = 4,
+                    ParentTagID = 1,
+                    Name = "Бэкэнд",
+                    Level = 2
+                },
+            new Tag
+            {
+                TagId = 5,
+                ParentTagID = 1,
+                Name = "Девопс",
+                Level = 2
+            },
+            new Tag
+                {
+                    TagId = 6,
+                    ParentTagID = 1,
+                    Name = "Дата сайенс",
+                    Level = 2
+                },
+            new Tag
+            {
+                TagId = 7,
+                ParentTagID = 1,
+                Name = "Продуктовый дизайн",
+                Level = 2
+            },
+            new Tag
+                {
+                    TagId = 8,
+                    ParentTagID = 1,
+                    Name = "Веб дизайн",
+                    Level = 2
+                },
+            new Tag
+                {
+                    TagId = 9,
+                    ParentTagID = 1,
+                    Name = "UX/UI",
+                    Level = 2
+                },
+            new Tag
+            {
+                TagId = 10,
+                ParentTagID = 1,
+                Name = "Продакт менеджер",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 11,
+                ParentTagID = 1,
+                Name = "Проджект менеджер",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 12,
+                ParentTagID = 1,
+                Name = "QA",
+                Level = 2
+            },
+            new Tag 
+                {
+                    TagId = 13,
+                    ParentTagID = 2,
+                    Name = "Маркетинг",
+                    Level = 2
+                },
+            new Tag
+            {
+                TagId = 14,
+                ParentTagID = 2,
+                Name = "Инвестор",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 15,
+                ParentTagID = 2,
+                Name = "Предприниматель",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 16,
+                ParentTagID = 2,
+                Name = "Финансы",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 17,
+                ParentTagID = 2,
+                Name = "Консультант",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 18,
+                ParentTagID = 2,
+                Name = "Аналитик",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 19,
+                ParentTagID = 2,
+                Name = "C-level",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 20,
+                ParentTagID = 2,
+                Name = "Продажи",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 21,
+                ParentTagID = 2,
+                Name = "Трекер",
+                Level = 2
+            },
+            new Tag
+            {
+                TagId = 22,
+                ParentTagID = 2,
+                Name = "Стартап",
+                Level = 2
+            }
+            );
+            
+            modelBuilder.Entity<SearchingTag>().HasData(
+            new SearchingTag
+            {
+                SearchingTagId = 1,
+                ParentTagID = 0,
+                Name = "IT",
+                Level = 1
+            },
+            new SearchingTag
+                {
+                    SearchingTagId = 2,
+                    ParentTagID = 0,
+                    Name = "Бизнес",
+                    Level = 1
+                },
+            new SearchingTag
+                {
+                    SearchingTagId = 3,
+                    ParentTagID = 1,
+                    Name = "Фронтэнд",
+                    Level = 2
+                },
+            new SearchingTag
+                {
+                    SearchingTagId = 4,
+                    ParentTagID = 1,
+                    Name = "Бэкэнд",
+                    Level = 2
+                },
+            new SearchingTag
+            {
+                SearchingTagId = 5,
+                ParentTagID = 1,
+                Name = "Девопс",
+                Level = 2
+            },
+            new SearchingTag
+                {
+                    SearchingTagId = 6,
+                    ParentTagID = 1,
+                    Name = "Дата сайенс",
+                    Level = 2
+                },
+            new SearchingTag
+            {
+                SearchingTagId = 7,
+                ParentTagID = 1,
+                Name = "Продуктовый дизайн",
+                Level = 2
+            },
+            new SearchingTag
+                {
+                    SearchingTagId = 8,
+                    ParentTagID = 1,
+                    Name = "Веб дизайн",
+                    Level = 2
+                },
+            new SearchingTag
+                {
+                    SearchingTagId = 9,
+                    ParentTagID = 1,
+                    Name = "UX/UI",
+                    Level = 2
+                },
+            new SearchingTag
+            {
+                SearchingTagId = 10,
+                ParentTagID = 1,
+                Name = "Продакт менеджер",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 11,
+                ParentTagID = 1,
+                Name = "Проджект менеджер",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 12,
+                ParentTagID = 1,
+                Name = "QA",
+                Level = 2
+            },
+            new SearchingTag 
+                {
+                    SearchingTagId = 13,
+                    ParentTagID = 2,
+                    Name = "Маркетинг",
+                    Level = 2
+                },
+            new SearchingTag
+            {
+                SearchingTagId = 14,
+                ParentTagID = 2,
+                Name = "Инвестор",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 15,
+                ParentTagID = 2,
+                Name = "Предприниматель",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 16,
+                ParentTagID = 2,
+                Name = "Финансы",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 17,
+                ParentTagID = 2,
+                Name = "Консультант",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 18,
+                ParentTagID = 2,
+                Name = "Аналитик",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 19,
+                ParentTagID = 2,
+                Name = "C-level",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 20,
+                ParentTagID = 2,
+                Name = "Продажи",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 21,
+                ParentTagID = 2,
+                Name = "Трекер",
+                Level = 2
+            },
+            new SearchingTag
+            {
+                SearchingTagId = 22,
+                ParentTagID = 2,
+                Name = "Стартап",
+                Level = 2
+            }
+            );
         }
 
         

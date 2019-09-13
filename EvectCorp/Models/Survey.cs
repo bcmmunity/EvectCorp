@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Evect.Models
 {
-    public class Log
+    public class Survey
     {
-        public int LogId { get; set; }
-        public string Logss { get; set; }
+        public int SurveyId { get; set; }
+        public string Name { get; set; }
     }
 }
