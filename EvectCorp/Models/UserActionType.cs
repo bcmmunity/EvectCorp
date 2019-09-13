@@ -59,7 +59,8 @@ namespace Evect.Models
         WaitingForEventMemberCode,
         WaitingForEventAdminCode,
         WaitingForTagAction,
-        WaitingForParentTag
+        WaitingForParentTag,
+        WaitingForChoosingParentTag
 
         #endregion
 

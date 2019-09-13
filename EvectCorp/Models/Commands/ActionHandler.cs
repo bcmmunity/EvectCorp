@@ -251,7 +251,15 @@ namespace EvectCorp.Models.Commands
                     break;
                 
                 case "Добавить дочерний тег":
-                    
+
+                    var parentTags = context.Tags.Where(t => t.Level == 1);
+                    TelegramKeyboard keyboard = new TelegramKeyboard();
+                    foreach (var parentTag in parentTags)
+                    {
+                        keyboard.AddRow(parentTag.Name);
+                    }
+
+                    await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForChoosingParentTag);
                     break;
                 
                 case "Вывести все родительские теги":
