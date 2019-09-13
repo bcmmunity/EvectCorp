@@ -27,7 +27,7 @@ namespace EvectCorp.Models
                 splited.Add(newList); 
             }
             
-            return splited;
+            return splited.Take(splited.Count - 1).ToList();
 
 
         }

@@ -252,13 +252,17 @@ namespace EvectCorp.Models.Commands
                 
                 case "Добавить дочерний тег":
 
-                    var parentTags = context.Tags.Where(t => t.Level == 1);
+                    var parentTags = Utils.SplitList(2, context.Tags.Where(t => t.Level == 1).ToList());
                     TelegramKeyboard keyboard = new TelegramKeyboard();
                     foreach (var parentTag in parentTags)
                     {
-                        keyboard.AddRow(parentTag.Name);
+                        keyboard.AddRow(parentTag.Select(e => e.Name));
                     }
-
+                    
+                    await client.SendTextMessageAsync(
+                        chatId, 
+                        "Введите родительский тег к которому надо добавить дочерний", 
+                        ParseMode.Markdown, replyMarkup: keyboard.Markup);
                     await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForChoosingParentTag);
                     break;
                 
@@ -304,6 +308,45 @@ namespace EvectCorp.Models.Commands
 
             await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForTagAction);
             await client.SendTextMessageAsync(chatId, "Выберите опцию", ParseMode.Markdown, replyMarkup: keyboard.Markup);
+        }
+
+        [UserAction(Actions.WaitingForChoosingParentTag)]
+        public async Task OnWaitingForChoosingParentTag(ApplicationContext context, Message message,
+            TelegramBotClient client)
+        {
+            var text = message.Text;
+            var chatId = message.Chat.Id;
+            Tag tag = context.Tags.FirstOrDefault(t => t.Level == 1 && t.Name == text);
+            if (tag != null)
+            {
+                AdminUser user = await DatabaseUtils.GetUserByChatId(context, chatId);
+                user.TempParentTag = tag.TagId;
+                context.Update(user);
+                context.SaveChanges();
+                await client.SendTextMessageAsync(chatId, "Введите новый дочерний тег", ParseMode.Markdown);
+                await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForNewChildTag);
+            }
+        }
+        
+        [UserAction(Actions.WaitingForNewChildTag)]
+        public async Task OnWaitingForNewChildTag(ApplicationContext context, Message message,
+            TelegramBotClient client)
+        {
+            var text = message.Text;
+            var chatId = message.Chat.Id;
+            AdminUser user = await DatabaseUtils.GetUserByChatId(context, chatId);
+            Tag newChildTag = new Tag()
+            {
+                ParentTagID = user.TempParentTag,
+                Name = text,
+                Level = 2
+            };
+            context.Tags.Add(newChildTag);
+            context.SaveChanges();
+            
+            await DatabaseUtils.ChangeUserAction(context, chatId, Actions.WaitingForTagAction);
+            await client.SendTextMessageAsync(chatId, "Выберите опцию", ParseMode.Markdown);
+            
         }
 
     }

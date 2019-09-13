@@ -13,6 +13,7 @@ namespace EvectCorp.Models
         
         public string TempEventName { get; set; }
         public string TempEventCode { get; set; }
+        public int TempParentTag { get; set; }
 
     }
 }
